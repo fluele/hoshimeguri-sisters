@@ -201,41 +201,24 @@
             list-style: none;
         }
 
-        .hud-links a {
-            font-family: var(--font-tech);
-            font-size: 0.85rem;
-            color: var(--cockpit-glow);
-            text-decoration: none;
-            padding: 0.6rem 1.2rem;
-            border: 1px solid var(--cockpit-border);
-            background: rgba(0, 255, 255, 0.05);
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            position: relative;
-            overflow: hidden;
-        }
+.hud-links a {
+    font-family: var(--font-tech);
+    font-size: 0.85rem;
+    color: var(--cockpit-glow);
+    text-decoration: none;
+    padding: 0.6rem 1.2rem;
+    border: 1px solid var(--cockpit-border);
+    background: rgba(0, 255, 255, 0.05);
+    transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
 
-        .hud-links a::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.2), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .hud-links a:hover::before {
-            left: 100%;
-        }
-
-        .hud-links a:hover {
-            background: rgba(0, 255, 255, 0.15);
-            border-color: var(--cockpit-glow);
-            box-shadow: 0 0 20px var(--cockpit-glow-dim);
-        }
+.hud-links a:hover {
+    background: rgba(0, 255, 255, 0.15);
+    border-color: var(--cockpit-glow);
+    box-shadow: 0 0 20px var(--cockpit-glow-dim);
+}
 
         /* ステータスインジケーター */
         .status-indicators {
@@ -498,86 +481,104 @@
         }
 
         /* 各ボタンの色設定 */
-        .control-btn.twitch {
-            border-color: #9146ff;
-            color: #9146ff;
-        }
-        .control-btn.twitch i,
-        .control-btn.twitch span {
-            color: #9146ff;
-        }
+.control-btn.twitch {
+    border-color: #9146ff;
+    color: #9146ff;
+}
+.control-btn.twitch i,
+.control-btn.twitch span {
+    color: #9146ff;
+}
 
-        .control-btn.youtube {
-            border-color: #ff0000;
-            color: #ff0000;
-        }
-        .control-btn.youtube i,
-        .control-btn.youtube span {
-            color: #ff0000;
-        }
+.control-btn.youtube {
+    border-color: #ff0000;
+    color: #ff0000;
+}
+.control-btn.youtube i,
+.control-btn.youtube span {
+    color: #ff0000;
+}
 
-        .control-btn.x-btn {
-            border-color: #888888;
-            color: #888888;
-        }
-        .control-btn.x-btn svg {
-            fill: #888888;
-        }
-        .control-btn.x-btn span {
-            color: #888888;
-        }
+.control-btn.x-btn {
+    border-color: #888888;
+    color: #888888;
+}
+.control-btn.x-btn svg {
+    fill: #888888;
+}
+.control-btn.x-btn span {
+    color: #888888;
+}
 
-        .control-btn.note {
-            border-color: #41c9b4;
-            color: #41c9b4;
-        }
-        .control-btn.note i,
-        .control-btn.note span {
-            color: #41c9b4;
-        }
+.control-btn.note {
+    border-color: #41c9b4;
+    color: #41c9b4;
+}
+.control-btn.note i,
+.control-btn.note span {
+    color: #41c9b4;
+}
 
-        /* ホバー時の色変更 - 修正版 */
-        .control-btn.twitch:hover {
-            background: #9146ff;
-            box-shadow: 0 5px 20px rgba(145, 70, 255, 0.5);
-        }
-        .control-btn.twitch:hover i,
-        .control-btn.twitch:hover span {
-            color: #000000;
-        }
+.control-btn.litlink {
+    border-color: #00e5ff;
+    color: #00e5ff;
+}
+.control-btn.litlink i,
+.control-btn.litlink span {
+    color: #00e5ff;
+}
 
-        .control-btn.youtube:hover {
-            background: #ff0000;
-            box-shadow: 0 5px 20px rgba(255, 0, 0, 0.5);
-        }
-        .control-btn.youtube:hover i,
-        .control-btn.youtube:hover span {
-            color: #000000;
-        }
+/* ホバー時の色変更 */
+.control-btn.twitch:hover {
+    background: #9146ff;
+    box-shadow: 0 5px 20px rgba(145, 70, 255, 0.5);
+}
+.control-btn.twitch:hover i,
+.control-btn.twitch:hover span {
+    color: #000000;
+}
 
-        .control-btn.x-btn:hover {
-            background: #888888;
-            box-shadow: 0 5px 20px rgba(136, 136, 136, 0.5);
-        }
-        .control-btn.x-btn:hover svg {
-            fill: #000000;
-        }
-        .control-btn.x-btn:hover span {
-            color: #000000;
-        }
+.control-btn.youtube:hover {
+    background: #ff0000;
+    box-shadow: 0 5px 20px rgba(255, 0, 0, 0.5);
+}
+.control-btn.youtube:hover i,
+.control-btn.youtube:hover span {
+    color: #000000;
+}
 
-        .control-btn.note:hover {
-            background: #41c9b4;
-            box-shadow: 0 5px 20px rgba(65, 201, 180, 0.5);
-        }
-        .control-btn.note:hover i,
-        .control-btn.note:hover span {
-            color: #000000;
-        }
+.control-btn.x-btn:hover {
+    background: #888888;
+    box-shadow: 0 5px 20px rgba(136, 136, 136, 0.5);
+}
+.control-btn.x-btn:hover svg {
+    fill: #000000;
+}
+.control-btn.x-btn:hover span {
+    color: #000000;
+}
 
-        .control-btn:hover {
-            transform: translateY(-3px);
-        }
+.control-btn.note:hover {
+    background: #41c9b4;
+    box-shadow: 0 5px 20px rgba(65, 201, 180, 0.5);
+}
+.control-btn.note:hover i,
+.control-btn.note:hover span {
+    color: #000000;
+}
+
+.control-btn.litlink:hover {
+    background: #00e5ff;
+    box-shadow: 0 5px 20px rgba(0, 229, 255, 0.5);
+}
+.control-btn.litlink:hover i,
+.control-btn.litlink:hover span {
+    color: #000000;
+}
+
+.control-btn:hover {
+    transform: translateY(-3px);
+}
 
         /* スクロールインジケーター */
         .scroll-indicator {
@@ -1354,7 +1355,11 @@
 <a class="panel-button" href="https://note.com/fluere_alpha" target="_blank" title="note">
 <i class="fas fa-book"></i>
 </a>
+<a class="panel-button" href="https://lit.link/fuluele" target="_blank" title="Lit.link">
+<i class="fas fa-link"></i>
+</a>
 </div>
+
 <!-- トップに戻るボタン -->
 <button aria-label="ブリッジに戻る" class="back-to-bridge" id="backToTop">
 <i class="fas fa-chevron-up"></i>
@@ -1399,6 +1404,10 @@
 <a class="control-btn note" href="https://note.com/fluere_alpha" target="_blank">
 <i class="fas fa-book"></i>
 <span>note</span>
+</a>
+<a class="control-btn litlink" href="https://lit.link/fuluele" target="_blank">
+<i class="fas fa-link"></i>
+<span>Lit.link</span>
 </a>
 </div>
 <div class="scroll-indicator">
@@ -1667,7 +1676,11 @@
 <a class="footer-link" href="https://note.com/fluere_alpha" target="_blank" title="note">
 <i class="fas fa-book"></i>
 </a>
+<a class="footer-link" href="https://lit.link/fuluele" target="_blank" title="Lit.link">
+<i class="fas fa-link"></i>
+</a>
 </div>
+
 <p class="copyright">© 2025 FULLELE / HOSHIMEGURI SISTERS // ALL SYSTEMS NOMINAL</p>
 </footer>
 <script>
