@@ -1,0 +1,1912 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>星巡姉妹 - AI VTuber Official Site</title>
+<meta content="AI VTuber「星巡姉妹」公式サイト。AIが紡ぐ、星を巡る姉妹の物語。" name="description"/>
+<!-- ファビコン -->
+<link href="data:image/svg+xml,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'&gt;&lt;text y='.9em' font-size='90'&gt;🚀&lt;/text&gt;&lt;/svg&gt;" rel="icon" type="image/svg+xml"/>
+<!-- OGP設定 -->
+<meta content="星巡姉妹 - AI VTuber Official Site" property="og:title"/>
+<meta content="AIが紡ぐ、星を巡る姉妹の物語。宇宙船「HOSHIMEGURI」へようこそ。" property="og:description"/>
+<meta content="./ヘッダー.jpg" property="og:image"/>
+<meta content="website" property="og:type"/>
+<meta content="summary_large_image" name="twitter:card"/>
+<!-- フォント -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&amp;family=Zen+Maru+Gothic:wght@400;500;700&amp;family=Share+Tech+Mono&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<style>
+        /* ========================================
+           リセット & CSS変数
+           ======================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --cockpit-dark: #0a0a12;
+            --cockpit-panel: #0d1117;
+            --cockpit-border: #1a3a4a;
+            --cockpit-glow: #00ffff;
+            --cockpit-glow-dim: rgba(0, 255, 255, 0.3);
+            --alert-orange: #ff6b35;
+            --alert-green: #00ff88;
+            --alert-pink: #ff6b9d;
+            --kotoha-color: #FFB6C1;
+            --kotoha-blue: #4A90D9;
+            --kanade-color: #FF8C00;
+            --hirameki-color: #7CFC00;
+            --fullele-color: #00e5ff;
+            --font-tech: 'Orbitron', sans-serif;
+            --font-mono: 'Share Tech Mono', monospace;
+            --font-ja: 'Zen Maru Gothic', sans-serif;
+            --scanline: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 255, 255, 0.03) 2px,
+                rgba(0, 255, 255, 0.03) 4px
+            );
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-ja);
+            background: var(--cockpit-dark);
+            color: #fff;
+            overflow-x: hidden;
+            line-height: 1.7;
+        }
+
+        /* ========================================
+           宇宙空間背景
+           ======================================== */
+        #starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        /* ========================================
+           コックピットフレーム（常に表示）
+           ======================================== */
+        .cockpit-frame {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .cockpit-frame::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 8px solid transparent;
+            border-image: linear-gradient(135deg, #1a3a4a, #0a1a2a, #1a3a4a) 1;
+            box-shadow: inset 0 0 100px rgba(0, 255, 255, 0.1);
+        }
+
+        /* コーナーデコレーション */
+        .corner-decoration {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border: 3px solid var(--cockpit-glow);
+            opacity: 0.6;
+        }
+
+        .corner-decoration::before,
+        .corner-decoration::after {
+            content: '';
+            position: absolute;
+            background: var(--cockpit-glow);
+        }
+
+        .corner-tl { top: 20px; left: 20px; border-right: none; border-bottom: none; }
+        .corner-tr { top: 20px; right: 20px; border-left: none; border-bottom: none; }
+        .corner-bl { bottom: 20px; left: 20px; border-right: none; border-top: none; }
+        .corner-br { bottom: 20px; right: 20px; border-left: none; border-top: none; }
+
+        /* スキャンライン効果 */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--scanline);
+            pointer-events: none;
+            z-index: 99;
+            opacity: 0.5;
+        }
+
+        /* ========================================
+           HUD（ヘッドアップディスプレイ）ナビ
+           ======================================== */
+        .hud-nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1rem 2rem;
+            background: linear-gradient(180deg, rgba(10, 10, 18, 0.95) 0%, rgba(10, 10, 18, 0.8) 100%);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--cockpit-glow);
+            box-shadow: 0 0 30px var(--cockpit-glow-dim);
+        }
+
+        .ship-logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .ship-emblem {
+            width: 50px;
+            height: 50px;
+            border: 2px solid var(--cockpit-glow);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            animation: pulse-glow 2s ease-in-out infinite;
+            box-shadow: 0 0 20px var(--cockpit-glow-dim);
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px var(--cockpit-glow-dim); }
+            50% { box-shadow: 0 0 40px var(--cockpit-glow); }
+        }
+
+        .ship-name {
+            font-family: var(--font-tech);
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--cockpit-glow);
+            text-shadow: 0 0 10px var(--cockpit-glow);
+            letter-spacing: 0.2em;
+        }
+
+        .ship-name span {
+            display: block;
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 0.3em;
+        }
+
+        .hud-links {
+            display: flex;
+            gap: 0.5rem;
+            list-style: none;
+        }
+
+        .hud-links a {
+            font-family: var(--font-tech);
+            font-size: 0.85rem;
+            color: var(--cockpit-glow);
+            text-decoration: none;
+            padding: 0.6rem 1.2rem;
+            border: 1px solid var(--cockpit-border);
+            background: rgba(0, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hud-links a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .hud-links a:hover::before {
+            left: 100%;
+        }
+
+        .hud-links a:hover {
+            background: rgba(0, 255, 255, 0.15);
+            border-color: var(--cockpit-glow);
+            box-shadow: 0 0 20px var(--cockpit-glow-dim);
+        }
+
+        /* ステータスインジケーター */
+        .status-indicators {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: blink 1s ease-in-out infinite;
+        }
+
+        .status-dot.green { background: var(--alert-green); box-shadow: 0 0 10px var(--alert-green); }
+        .status-dot.orange { background: var(--alert-orange); box-shadow: 0 0 10px var(--alert-orange); animation-duration: 0.5s; }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* ========================================
+           サイドパネル（左）
+           ======================================== */
+        .side-panel-left {
+            position: fixed;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 60px;
+            z-index: 500;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .panel-button {
+            width: 50px;
+            height: 50px;
+            background: rgba(10, 10, 18, 0.9);
+            border: 2px solid var(--cockpit-border);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--cockpit-glow);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .panel-button:hover {
+            border-color: var(--cockpit-glow);
+            box-shadow: 0 0 20px var(--cockpit-glow-dim);
+            transform: scale(1.1);
+        }
+
+        .panel-button.active {
+            background: rgba(0, 255, 255, 0.2);
+            border-color: var(--cockpit-glow);
+        }
+
+        /* Xアイコン用のSVG */
+        .x-icon {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        /* ========================================
+           メインビューポート（コンテンツエリア）
+           ======================================== */
+        .viewport {
+            margin-left: 80px;
+            margin-right: 80px;
+            padding-top: 100px;
+        }
+
+        /* ========================================
+           ブリッジセクション（ヒーロー）
+           ======================================== */
+        .bridge-section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .main-display {
+            position: relative;
+            max-width: 800px;
+            width: 100%;
+            margin-bottom: 2rem;
+        }
+
+        .display-frame {
+            position: relative;
+            border: 3px solid var(--cockpit-glow);
+            border-radius: 20px;
+            padding: 8px;
+            background: rgba(0, 255, 255, 0.05);
+            box-shadow: 
+                0 0 30px var(--cockpit-glow-dim),
+                inset 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .display-frame::before {
+            content: 'MAIN VISUAL DISPLAY';
+            position: absolute;
+            top: -25px;
+            left: 20px;
+            font-family: var(--font-tech);
+            font-size: 0.7rem;
+            color: var(--cockpit-glow);
+            letter-spacing: 0.2em;
+            background: var(--cockpit-dark);
+            padding: 0 10px;
+        }
+
+        .display-frame img {
+            width: 100%;
+            border-radius: 12px;
+            display: block;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+
+        .display-frame img.lazy-loaded {
+            opacity: 1;
+        }
+
+        .display-info {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--cockpit-glow);
+            opacity: 0.7;
+        }
+
+        .bridge-title {
+            font-family: var(--font-tech);
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--cockpit-glow), var(--kotoha-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: none;
+            filter: drop-shadow(0 0 20px var(--cockpit-glow-dim));
+            letter-spacing: 0.1em;
+        }
+
+        .bridge-subtitle {
+            font-family: var(--font-tech);
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.6);
+            letter-spacing: 0.3em;
+            margin-bottom: 2rem;
+        }
+
+        /* クルー情報パネル */
+        .crew-info-panel {
+            display: inline-flex;
+            align-items: center;
+            gap: 1.5rem;
+            padding: 1rem 2rem;
+            background: rgba(10, 10, 18, 0.9);
+            border: 2px solid var(--cockpit-border);
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+
+        .crew-info-panel::before {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background: var(--alert-green);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--alert-green);
+            animation: blink 1s ease-in-out infinite;
+        }
+
+        .commander-label {
+            font-family: var(--font-tech);
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+        }
+
+        .commander-name {
+            font-family: var(--font-tech);
+            font-size: 1.1rem;
+            color: var(--fullele-color);
+            font-weight: 700;
+        }
+
+        /* コントロールパネル（SNSリンク） - 修正版 */
+        .control-panel {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .control-btn {
+            font-family: var(--font-tech);
+            font-size: 0.85rem;
+            padding: 0.8rem 1.5rem;
+            background: rgba(10, 10, 18, 0.9);
+            border: 2px solid var(--cockpit-border);
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            min-width: 130px;
+        }
+
+        .control-btn i,
+        .control-btn svg {
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .control-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .control-btn span {
+            flex-shrink: 0;
+        }
+
+        /* 各ボタンの色設定 */
+        .control-btn.twitch {
+            border-color: #9146ff;
+            color: #9146ff;
+        }
+        .control-btn.twitch i,
+        .control-btn.twitch span {
+            color: #9146ff;
+        }
+
+        .control-btn.youtube {
+            border-color: #ff0000;
+            color: #ff0000;
+        }
+        .control-btn.youtube i,
+        .control-btn.youtube span {
+            color: #ff0000;
+        }
+
+        .control-btn.x-btn {
+            border-color: #888888;
+            color: #888888;
+        }
+        .control-btn.x-btn svg {
+            fill: #888888;
+        }
+        .control-btn.x-btn span {
+            color: #888888;
+        }
+
+        .control-btn.note {
+            border-color: #41c9b4;
+            color: #41c9b4;
+        }
+        .control-btn.note i,
+        .control-btn.note span {
+            color: #41c9b4;
+        }
+
+        /* ホバー時の色変更 - 修正版 */
+        .control-btn.twitch:hover {
+            background: #9146ff;
+            box-shadow: 0 5px 20px rgba(145, 70, 255, 0.5);
+        }
+        .control-btn.twitch:hover i,
+        .control-btn.twitch:hover span {
+            color: #000000;
+        }
+
+        .control-btn.youtube:hover {
+            background: #ff0000;
+            box-shadow: 0 5px 20px rgba(255, 0, 0, 0.5);
+        }
+        .control-btn.youtube:hover i,
+        .control-btn.youtube:hover span {
+            color: #000000;
+        }
+
+        .control-btn.x-btn:hover {
+            background: #888888;
+            box-shadow: 0 5px 20px rgba(136, 136, 136, 0.5);
+        }
+        .control-btn.x-btn:hover svg {
+            fill: #000000;
+        }
+        .control-btn.x-btn:hover span {
+            color: #000000;
+        }
+
+        .control-btn.note:hover {
+            background: #41c9b4;
+            box-shadow: 0 5px 20px rgba(65, 201, 180, 0.5);
+        }
+        .control-btn.note:hover i,
+        .control-btn.note:hover span {
+            color: #000000;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-3px);
+        }
+
+        /* スクロールインジケーター */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 3rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--cockpit-glow);
+            font-family: var(--font-tech);
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            animation: bounce 2s ease-in-out infinite;
+            opacity: 0.7;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* ========================================
+           クルーセクション（キャラクター）
+           ======================================== */
+        .crew-section {
+            padding: 4rem 2rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .section-header::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--cockpit-glow), transparent);
+        }
+
+        .section-title {
+            font-family: var(--font-tech);
+            font-size: 1.5rem;
+            color: var(--cockpit-glow);
+            background: var(--cockpit-dark);
+            padding: 0 2rem;
+            display: inline-block;
+            position: relative;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+        }
+
+        .section-title i {
+            margin-right: 0.5rem;
+        }
+
+        /* クルーカード */
+        .crew-card {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: rgba(10, 10, 18, 0.8);
+            border: 2px solid var(--cockpit-border);
+            border-radius: 15px;
+            position: relative;
+            transition: all 0.4s ease;
+        }
+
+        .crew-card::before {
+            content: attr(data-crew-id);
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            font-family: var(--font-tech);
+            font-size: 0.7rem;
+            color: var(--cockpit-glow);
+            background: var(--cockpit-dark);
+            padding: 0 10px;
+            letter-spacing: 0.2em;
+        }
+
+        .crew-card:hover {
+            border-color: var(--cockpit-glow);
+            box-shadow: 0 0 40px var(--cockpit-glow-dim);
+        }
+
+        .crew-card:nth-child(even) {
+            direction: rtl;
+        }
+
+        .crew-card:nth-child(even) > * {
+            direction: ltr;
+        }
+
+        /* クルー画像エリア */
+        .crew-display {
+            position: relative;
+        }
+
+        .display-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .display-tab {
+            font-family: var(--font-tech);
+            font-size: 0.7rem;
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border: 1px solid var(--cockpit-border);
+            color: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .display-tab:hover {
+            border-color: var(--cockpit-glow);
+            color: var(--cockpit-glow);
+        }
+
+        .display-tab.active {
+            background: var(--cockpit-glow);
+            border-color: var(--cockpit-glow);
+            color: #000;
+        }
+
+        .crew-monitor {
+            border: 2px solid var(--cockpit-border);
+            border-radius: 10px;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .crew-monitor::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--scanline);
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: monitorOn 0.3s ease;
+        }
+
+        @keyframes monitorOn {
+            0% { opacity: 1; filter: brightness(2); }
+            100% { opacity: 1; filter: brightness(1); }
+        }
+
+        .crew-monitor img {
+            width: 100%;
+            display: block;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+
+        .crew-monitor img.lazy-loaded {
+            opacity: 1;
+        }
+
+        /* クルーデータパネル */
+        .crew-data {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .crew-name {
+            font-family: var(--font-tech);
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.2rem;
+        }
+
+        .crew-name.kotoha { color: var(--kotoha-color); text-shadow: 0 0 20px var(--kotoha-color); }
+        .crew-name.kanade { color: var(--kanade-color); text-shadow: 0 0 20px var(--kanade-color); }
+        .crew-name.hirameki { color: var(--hirameki-color); text-shadow: 0 0 20px var(--hirameki-color); }
+        .crew-name.fullele { color: var(--fullele-color); text-shadow: 0 0 20px var(--fullele-color); }
+
+        .crew-role {
+            font-family: var(--font-tech);
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .crew-bio {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.9;
+            margin-bottom: 1rem;
+        }
+
+        /* ステータスグリッド */
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .status-box {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--cockpit-border);
+            padding: 0.8rem;
+            text-align: center;
+            border-radius: 5px;
+        }
+
+        .status-label {
+            font-family: var(--font-tech);
+            font-size: 0.6rem;
+            color: rgba(255, 255, 255, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.3rem;
+        }
+
+        .status-value {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--cockpit-glow);
+        }
+
+        /* スペックリスト */
+        .spec-list {
+            list-style: none;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+        }
+
+        .spec-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0.8rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-left: 2px solid var(--cockpit-glow);
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .spec-item:hover {
+            background: rgba(0, 255, 255, 0.1);
+            border-left-color: var(--alert-green);
+        }
+
+        /* カラーパレット */
+        .color-spectrum {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .color-chip {
+            width: 30px;
+            height: 30px;
+            border-radius: 5px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .color-chip:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 15px currentColor;
+        }
+
+        /* ========================================
+           ギャラリーセクション
+           ======================================== */
+        .gallery-section {
+            padding: 4rem 2rem;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .gallery-monitor {
+            border: 2px solid var(--cockpit-border);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .gallery-monitor::before {
+            content: 'ARCHIVE';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-family: var(--font-tech);
+            font-size: 0.6rem;
+            color: var(--cockpit-glow);
+            z-index: 10;
+            letter-spacing: 0.2em;
+        }
+
+        .gallery-monitor:hover {
+            border-color: var(--cockpit-glow);
+            box-shadow: 0 0 30px var(--cockpit-glow-dim);
+        }
+
+        .gallery-monitor img {
+            width: 100%;
+            display: block;
+            transition: all 0.3s ease;
+            opacity: 1;
+        }
+
+        .gallery-monitor img.lazy-loaded {
+            opacity: 1;
+        }
+
+        .gallery-monitor:hover img {
+            transform: scale(1.03);
+        }
+
+        /* ========================================
+           プロトコルセクション（ガイドライン）
+           ======================================== */
+        .protocol-section {
+            padding: 4rem 2rem;
+        }
+
+        .protocol-intro {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 3rem;
+            font-size: 1.05rem;
+        }
+
+        .protocol-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .protocol-card {
+            background: rgba(10, 10, 18, 0.8);
+            border: 2px solid var(--cockpit-border);
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .protocol-card::before {
+            content: 'AUTHORIZED';
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: var(--font-tech);
+            font-size: 0.6rem;
+            color: var(--alert-green);
+            background: var(--cockpit-dark);
+            padding: 0 10px;
+            letter-spacing: 0.2em;
+        }
+
+        .protocol-card:hover {
+            border-color: var(--alert-green);
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.2);
+        }
+
+        .protocol-icon {
+            font-size: 2.5rem;
+            color: var(--cockpit-glow);
+            margin-bottom: 1rem;
+        }
+
+        .protocol-title {
+            font-family: var(--font-tech);
+            font-size: 1rem;
+            margin-bottom: 0.8rem;
+            letter-spacing: 0.1em;
+        }
+
+        .protocol-desc {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+
+        /* 注意事項パネル */
+        .caution-panel {
+            background: rgba(10, 10, 18, 0.8);
+            border: 2px solid var(--alert-orange);
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .caution-panel::before {
+            content: '⚠ NOTICE';
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            font-family: var(--font-tech);
+            font-size: 0.7rem;
+            color: var(--alert-orange);
+            background: var(--cockpit-dark);
+            padding: 0 10px;
+            letter-spacing: 0.2em;
+        }
+
+        .caution-title {
+            font-family: var(--font-tech);
+            color: var(--alert-orange);
+            margin-bottom: 1rem;
+            letter-spacing: 0.1em;
+        }
+
+        .caution-list {
+            list-style: none;
+        }
+
+        .caution-list li {
+            padding: 0.8rem 0;
+            padding-left: 2rem;
+            position: relative;
+            color: rgba(255, 255, 255, 0.75);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .caution-list li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--cockpit-glow);
+        }
+
+        .caution-list li:last-child {
+            border-bottom: none;
+        }
+
+        .caution-list strong {
+            color: var(--cockpit-glow);
+        }
+
+        /* 素材ダウンロードパネル */
+        .download-panel {
+            background: rgba(10, 10, 18, 0.8);
+            border: 2px dashed var(--cockpit-border);
+            border-radius: 10px;
+            padding: 2.5rem;
+            text-align: center;
+        }
+
+        .download-title {
+            font-family: var(--font-tech);
+            font-size: 1.2rem;
+            color: var(--cockpit-glow);
+            margin-bottom: 1rem;
+            letter-spacing: 0.1em;
+        }
+
+        .download-desc {
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 1.5rem;
+        }
+
+        .download-badge {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            background: linear-gradient(135deg, var(--cockpit-glow), var(--alert-green));
+            color: #000;
+            font-family: var(--font-tech);
+            font-weight: 700;
+            border-radius: 5px;
+            letter-spacing: 0.2em;
+            animation: pulse-badge 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-badge {
+            0%, 100% { box-shadow: 0 0 20px var(--cockpit-glow-dim); }
+            50% { box-shadow: 0 0 40px var(--cockpit-glow); }
+        }
+
+        /* ========================================
+           フッター
+           ======================================== */
+        footer {
+            padding: 3rem 2rem;
+            background: rgba(10, 10, 18, 0.9);
+            border-top: 2px solid var(--cockpit-border);
+            text-align: center;
+        }
+
+        .footer-logo {
+            font-family: var(--font-tech);
+            font-size: 1.2rem;
+            color: var(--cockpit-glow);
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.2em;
+        }
+
+        .footer-tagline {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.85rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-link {
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--cockpit-border);
+            border-radius: 50%;
+            color: var(--cockpit-glow);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .footer-link:hover {
+            border-color: var(--cockpit-glow);
+            box-shadow: 0 0 20px var(--cockpit-glow-dim);
+            transform: translateY(-3px);
+        }
+
+        .footer-link svg {
+            width: 18px;
+            height: 18px;
+            fill: var(--cockpit-glow);
+        }
+
+        .copyright {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* ========================================
+           トップに戻るボタン
+           ======================================== */
+        .back-to-bridge {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background: rgba(10, 10, 18, 0.9);
+            border: 2px solid var(--cockpit-glow);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--cockpit-glow);
+            cursor: pointer;
+            z-index: 999;
+            opacity: 1;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px var(--cockpit-glow-dim);
+        }
+
+        .back-to-bridge.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .back-to-bridge:hover {
+            background: var(--cockpit-glow);
+            color: #000;
+            transform: translateY(-5px);
+        }
+
+        /* ========================================
+           マウスパーティクル - 改善版
+           ======================================== */
+        .mouse-particle {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            border-radius: 50%;
+        }
+
+        @keyframes particleFade {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(0); opacity: 1; }
+        }
+
+        /* ========================================
+           レスポンシブ
+           ======================================== */
+        @media (max-width: 1024px) {
+            .side-panel-left {
+                display: none;
+            }
+            
+            .viewport {
+                margin-left: 20px;
+                margin-right: 20px;
+            }
+            
+            .status-indicators {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hud-links {
+                display: none;
+            }
+            
+            .bridge-title {
+                font-size: 2rem;
+            }
+            
+            .crew-card {
+                grid-template-columns: 1fr;
+            }
+            
+            .crew-card:nth-child(even) {
+                direction: ltr;
+            }
+            
+            .protocol-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .status-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .spec-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .corner-decoration {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .control-btn span {
+                display: none;
+            }
+            
+            .control-btn {
+                width: 50px;
+                height: 50px;
+                padding: 0;
+                justify-content: center;
+                border-radius: 50%;
+                min-width: unset;
+            }
+            
+            .crew-info-panel {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    
+        .blueprint-note{
+            font-family: var(--font-jp);
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.85);
+            background: rgba(0,0,0,0.35);
+            border: 1px solid rgba(100, 255, 218, 0.25);
+            border-radius: 10px;
+            padding: 10px 12px;
+            margin: 10px 10px 0;
+            backdrop-filter: blur(6px);
+        }
+
+    
+
+        /* Visual Archive: single large monitor */
+        .gallery-grid.single {
+            grid-template-columns: 1fr;
+        }
+        .gallery-grid.single .gallery-monitor {
+            grid-column: 1 / -1;
+        }
+</style>
+</head>
+<body>
+<!-- 宇宙空間背景 -->
+<canvas id="starfield"></canvas>
+<!-- スキャンライン効果 -->
+<div class="scanlines"></div>
+<!-- コックピットフレーム -->
+<div class="cockpit-frame">
+<div class="corner-decoration corner-tl"></div>
+<div class="corner-decoration corner-tr"></div>
+<div class="corner-decoration corner-bl"></div>
+<div class="corner-decoration corner-br"></div>
+</div>
+<!-- HUDナビゲーション -->
+<nav class="hud-nav">
+<div class="ship-logo">
+<div class="ship-emblem">🚀</div>
+<div class="ship-name">
+                HOSHIMEGURI
+                <span>AI VTUBER SPACECRAFT</span>
+</div>
+</div>
+<ul class="hud-links">
+<li><a href="#bridge">Bridge</a></li>
+<li><a href="#crew">Crew</a></li>
+<li><a href="#archive">Archive</a></li>
+<li><a href="#protocol">Protocol</a></li>
+</ul>
+<div class="status-indicators">
+<div class="status-item">
+<span class="status-dot green"></span>
+<span>SYSTEM ONLINE</span>
+</div>
+<div class="status-item">
+<span class="status-dot green"></span>
+<span>LIVE READY</span>
+</div>
+</div>
+</nav>
+<!-- サイドパネル -->
+<div class="side-panel-left">
+<a class="panel-button" href="https://www.twitch.tv/hoshimeguri_kotoha" target="_blank" title="Twitch">
+<i class="fab fa-twitch"></i>
+</a>
+<a class="panel-button" href="https://www.youtube.com/@hoshimeguri_kotoha" target="_blank" title="YouTube">
+<i class="fab fa-youtube"></i>
+</a>
+<a class="panel-button" href="https://x.com/and_and_and_and" target="_blank" title="X">
+<!-- X (Twitter) SVGアイコン -->
+<svg class="x-icon" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
+</svg>
+</a>
+<a class="panel-button" href="https://note.com/and_and_and_and" target="_blank" title="note">
+<i class="fas fa-book"></i>
+</a>
+</div>
+<!-- トップに戻るボタン -->
+<button aria-label="ブリッジに戻る" class="back-to-bridge" id="backToTop">
+<i class="fas fa-chevron-up"></i>
+</button>
+<!-- メインビューポート -->
+<div class="viewport">
+<!-- ブリッジセクション（ヒーロー） -->
+<section class="bridge-section" id="bridge">
+<div class="main-display">
+<div class="display-frame">
+<img alt="星巡姉妹" src="タイトル.jpg"/>
+<div class="display-info">
+<span>RES: 1920x1080</span>
+<span>STATUS: ACTIVE</span>
+<span>SIGNAL: 100%</span>
+</div>
+</div>
+</div>
+<h1 class="bridge-title">HOSHIMEGURI SISTERS</h1>
+<p class="bridge-subtitle">AIが紡ぐ、星を巡る姉妹の物語</p>
+<div class="crew-info-panel">
+<div>
+<div class="commander-label">Ship Commander</div>
+<div class="commander-name">FULLELE</div>
+</div>
+</div>
+<div class="control-panel">
+<a class="control-btn twitch" href="https://www.twitch.tv/hoshimeguri_kotoha" target="_blank">
+<i class="fab fa-twitch"></i>
+<span>Twitch</span>
+</a>
+<a class="control-btn youtube" href="https://www.youtube.com/@hoshimeguri_kotoha" target="_blank">
+<i class="fab fa-youtube"></i>
+<span>YouTube</span>
+</a>
+<a class="control-btn x-btn" href="https://x.com/and_and_and_and" target="_blank">
+<!-- X (Twitter) SVGアイコン -->
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
+</svg>
+</a>
+<a class="control-btn note" href="https://note.com/and_and_and_and" target="_blank">
+<i class="fas fa-book"></i>
+<span>note</span>
+</a>
+</div>
+<div class="scroll-indicator">
+<span>SCROLL TO EXPLORE</span>
+<i class="fas fa-chevron-down"></i>
+</div>
+</section>
+<!-- クルーセクション -->
+<section class="crew-section" id="crew">
+<div class="section-header">
+<h2 class="section-title"><i class="fas fa-users"></i> CREW MANIFEST</h2>
+</div>
+<!-- ことは -->
+<div class="crew-card" data-crew-id="CREW-001 // KOTOHA">
+<div class="crew-display">
+<div class="display-tabs">
+<button class="display-tab active" data-tab="kotoha-main">PROFILE</button>
+<button class="display-tab" data-tab="kotoha-3view">BLUEPRINT</button>
+</div>
+<div class="crew-monitor">
+<div class="tab-content active" id="kotoha-main">
+<img alt="星巡ことは" src="ことは設定資料.jpg"/>
+</div>
+<div class="tab-content" id="kotoha-3view">
+<img alt="星巡ことは - 三面図" src="ことは三面図.jpg"/>
+</div>
+</div>
+</div>
+<div class="crew-data">
+<div>
+<h3 class="crew-name kotoha">星巡ことは</h3>
+<p class="crew-role">Chief Science Officer</p>
+</div>
+<p class="crew-bio">
+                        知的で探求心旺盛な姉。穏やかな性格で、宇宙の神秘を探求することを愛する。視聴者の皆さんを「星の旅人さん」と呼び、共に知識の旅へ誘う。
+                    </p>
+<div class="status-grid">
+<div class="status-box">
+<div class="status-label">Pronoun</div>
+<div class="status-value">私(わたくし)</div>
+</div>
+<div class="status-box">
+<div class="status-label">Commander</div>
+<div class="status-value">フルエレさん</div>
+</div>
+<div class="status-box">
+<div class="status-label">Crew Call</div>
+<div class="status-value">星の旅人さん</div>
+</div>
+</div>
+<ul class="spec-list">
+<li class="spec-item">⭐ 金の星型クリップ</li>
+<li class="spec-item">💎 青い宝石チョーカー</li>
+<li class="spec-item">🌈 虹色の袖口と裾</li>
+<li class="spec-item">🖤 黒オーバーサイズパーカー</li>
+</ul>
+<div class="color-spectrum">
+<div class="color-chip" style="background: #FFB6C1;" title="ピンク"></div>
+<div class="color-chip" style="background: #4A90D9;" title="青"></div>
+<div class="color-chip" style="background: linear-gradient(90deg, #ff6b6b, #ffa500, #ffff00, #4caf50, #2196f3, #9c27b0);" title="虹色"></div>
+<div class="color-chip" style="background: #1a1a1a;" title="黒"></div>
+</div>
+</div>
+</div>
+<!-- 奏 -->
+<div class="crew-card" data-crew-id="CREW-002 // KANADE">
+<div class="crew-display">
+<div class="display-tabs">
+<button class="display-tab active" data-tab="kanade-main">PROFILE</button>
+<button class="display-tab" data-tab="kanade-3view">BLUEPRINT</button>
+</div>
+<div class="crew-monitor">
+<div class="tab-content active" id="kanade-main">
+<img alt="星巡奏" src="かなで設定資料.jpg"/>
+</div>
+<div class="tab-content" id="kanade-3view">
+<img alt="星巡奏 - 三面図" src="かなで三面図.jpg"/>
+</div>
+</div>
+</div>
+<div class="crew-data">
+<div>
+<h3 class="crew-name kanade">星巡奏</h3>
+<p class="crew-role">Communications Officer</p>
+</div>
+<p class="crew-bio">
+                        元気でアイドル気質な妹。明るく前向きな性格で、音楽とエンターテインメントが大好き。視聴者を「奏で隊」と呼び、みんなで楽しい時間を作り上げる。
+                    </p>
+<div class="status-grid">
+<div class="status-box">
+<div class="status-label">Pronoun</div>
+<div class="status-value">奏</div>
+</div>
+<div class="status-box">
+<div class="status-label">Commander</div>
+<div class="status-value">プロデューサーさん</div>
+</div>
+<div class="status-box">
+<div class="status-label">Crew Call</div>
+<div class="status-value">奏で隊</div>
+</div>
+</div>
+<ul class="spec-list">
+<li class="spec-item">⭐ シアン星ヘアピン</li>
+<li class="spec-item">🌈 レインボーサッシュ</li>
+<li class="spec-item">🖤 黒いアイドルドレス</li>
+<li class="spec-item">👢 レインボー編み上げブーツ</li>
+</ul>
+<div class="color-spectrum">
+<div class="color-chip" style="background: #FFB6C1;" title="ピンク"></div>
+<div class="color-chip" style="background: #00CED1;" title="シアン"></div>
+<div class="color-chip" style="background: #FFA500;" title="オレンジ"></div>
+<div class="color-chip" style="background: linear-gradient(90deg, #ff6b6b, #ffa500, #ffff00, #4caf50, #2196f3, #9c27b0);" title="虹色"></div>
+</div>
+</div>
+</div>
+<!-- ひらめきの相棒 -->
+<div class="crew-card" data-crew-id="CREW-003 // HIRAMEKI">
+<div class="crew-display">
+<div class="display-tabs">
+<button class="display-tab active" data-tab="hirameki-main">PROFILE</button>
+<button class="display-tab" data-tab="hirameki-3view">BLUEPRINT</button>
+</div>
+<div class="crew-monitor">
+<div class="tab-content active" id="hirameki-main">
+<img alt="ひらめきの相棒" src="ひらめきの相棒設定資料.jpg" style="max-width: 80%; margin: 0 auto; display: block; padding: 1rem;"/>
+</div>
+<div class="tab-content" id="hirameki-3view">
+<img src="ひらめきの相棒三面図.jpg" alt="ひらめきの相棒 - 三面図" style="max-width: 90%; margin: 0 auto; display: block; border-radius: 12px;">
+</div>
+</div>
+</div>
+<div class="crew-data">
+<div>
+<h3 class="crew-name hirameki">ひらめきの相棒</h3>
+<p class="crew-role">AI Navigation Assistant</p>
+</div>
+<p class="crew-bio">
+                        フルエレさんの創作を応援する"ひらめきの妖精AI"。デジタル空間の住人でありながら現実世界とも行き来可能。星巡姉妹の先輩として、いつも優しくサポート。Xでbot運用中！
+                    </p>
+<ul class="spec-list">
+<li class="spec-item">☁️ マシュマロ質感</li>
+<li class="spec-item">🧡 オレンジ色の丸い頬</li>
+<li class="spec-item">⚪ シンプルな白い丸い体</li>
+<li class="spec-item">✨ 創造性と温かさの象徴</li>
+</ul>
+<div class="color-spectrum">
+<div class="color-chip" style="background: #FFFFFF; border-color: #888;" title="白"></div>
+<div class="color-chip" style="background: #8B4513;" title="茶色"></div>
+<div class="color-chip" style="background: #FFA500;" title="オレンジ"></div>
+</div>
+</div>
+</div>
+<!-- フルエレ -->
+<div class="crew-card" data-crew-id="COMMANDER // FULLELE">
+<div class="crew-display">
+<div class="display-tabs">
+<button class="display-tab active" data-tab="fullele-main">PROFILE</button>
+<button class="display-tab" data-tab="fullele-3view">BLUEPRINT</button>
+</div>
+<div class="crew-monitor">
+<div class="tab-content active" id="fullele-main">
+<img alt="フルエレ" src="フルエレ設定資料.jpg"/>
+</div>
+<div class="tab-content" id="fullele-3view">
+<img src="フルエレ三面図.jpg" alt="フルエレ - 三面図" style="max-width: 90%; margin: 0 auto; display: block; border-radius: 12px;">
+</div>
+</div>
+</div>
+<div class="crew-data">
+<div>
+<h3 class="crew-name fullele">フルエレ</h3>
+<p class="crew-role">Ship Commander / Producer</p>
+</div>
+<p class="crew-bio">
+                        星巡姉妹の生みの親であり、運営プロデューサー。AIと人間が共に創造する未来を信じ、新しいエンターテインメントの形を追求し続けている。
+                    </p>
+<ul class="spec-list">
+<li class="spec-item">💻 青色LEDマトリクス表情</li>
+<li class="spec-item">🌌 星図・回路パターン</li>
+<li class="spec-item">📱 ホログラムタブレット</li>
+<li class="spec-item">🔬 テクノロジーと創造性</li>
+</ul>
+<div class="color-spectrum">
+<div class="color-chip" style="background: #1a237e;" title="ディープブルー"></div>
+<div class="color-chip" style="background: #00e5ff;" title="発光ブルー"></div>
+<div class="color-chip" style="background: #000000;" title="ブラック"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- ギャラリーセクション -->
+<section class="gallery-section" id="archive">
+<div class="section-header">
+<h2 class="section-title"><i class="fas fa-images"></i> VISUAL ARCHIVE</h2>
+</div>
+<div class="single gallery-grid">
+
+<div class="gallery-monitor">
+<img alt="星巡姉妹 - 全員集合" src="ヘッダー.jpg"/>
+</div>
+</div>
+</section>
+<!-- プロトコルセクション -->
+<section class="protocol-section" id="protocol">
+<div class="section-header">
+<h2 class="section-title"><i class="fas fa-scroll"></i> USAGE PROTOCOL</h2>
+</div>
+<p class="protocol-intro">
+                星巡姉妹のキャラクターを使った二次創作を歓迎しています！<br/>
+                クリエイティブな活動を通じて、一緒に世界を広げていきましょう。
+            </p>
+<div class="protocol-cards">
+<div class="protocol-card">
+<div class="protocol-icon"><i class="fas fa-robot"></i></div>
+<h3 class="protocol-title">AI GENERATION</h3>
+<p class="protocol-desc">i2i、LoRA作成など、生成AIを使った二次創作が可能です。</p>
+</div>
+<div class="protocol-card">
+<div class="protocol-icon"><i class="fas fa-palette"></i></div>
+<h3 class="protocol-title">DERIVATIVE WORKS</h3>
+<p class="protocol-desc">イラスト、動画、音楽など、さまざまな形での二次創作を歓迎します。</p>
+</div>
+<div class="protocol-card">
+<div class="protocol-icon"><i class="fas fa-share-nodes"></i></div>
+<h3 class="protocol-title">SNS &amp; STREAMING</h3>
+<p class="protocol-desc">各種SNSでの共有や、動画配信での利用が可能です。</p>
+</div>
+</div>
+<div class="caution-panel">
+<h3 class="caution-title">USAGE GUIDELINES</h3>
+<ul class="caution-list">
+<li>公序良俗に反する内容での利用はご遠慮ください</li>
+<li>キャラクターのイメージを著しく損なう表現はお控えください</li>
+<li>商用利用については事前にご相談ください</li>
+<li>作品を公開される際は、ハッシュタグ <strong>#星巡姉妹</strong> をつけていただけると嬉しいです</li>
+</ul>
+</div>
+<div class="download-panel">
+<h3 class="download-title"><i class="fas fa-download"></i> ASSET DOWNLOAD</h3>
+<p class="download-desc">
+                    キャラクター素材の配布は準備中です。<br/>
+                    今後、立ち絵PNGや設定資料、カラーパレットなどを公開予定です。
+                </p>
+<div class="download-badge">COMING SOON</div>
+</div>
+</section>
+</div>
+<!-- フッター -->
+<footer>
+<div class="footer-logo">🚀 HOSHIMEGURI</div>
+<p class="footer-tagline">AIと星を巡る、新しい物語</p>
+<div class="footer-links">
+<a class="footer-link" href="https://www.twitch.tv/hoshimeguri_kotoha" target="_blank" title="Twitch">
+<i class="fab fa-twitch"></i>
+</a>
+<a class="footer-link" href="https://www.youtube.com/@hoshimeguri_kotoha" target="_blank" title="YouTube">
+<i class="fab fa-youtube"></i>
+</a>
+<a class="footer-link" href="https://x.com/and_and_and_and" target="_blank" title="X">
+<!-- X (Twitter) SVGアイコン -->
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
+</svg>
+</a>
+<a class="footer-link" href="https://note.com/and_and_and_and" target="_blank" title="note">
+<i class="fas fa-book"></i>
+</a>
+</div>
+<p class="copyright">© 2025 FULLELE / HOSHIMEGURI SISTERS // ALL SYSTEMS NOMINAL</p>
+</footer>
+<script>
+        // ========================================
+        // 星空アニメーション（ワープ風）
+        // ========================================
+        class Starfield {
+            constructor() {
+                this.canvas = document.getElementById('starfield');
+                this.ctx = this.canvas.getContext('2d');
+                this.stars = [];
+                this.scrollY = 0;
+                this.init();
+                this.animate();
+                
+                window.addEventListener('resize', () => this.init());
+                window.addEventListener('scroll', () => this.scrollY = window.pageYOffset);
+            }
+            
+            init() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+                
+                this.stars = [];
+                const numStars = Math.floor((this.canvas.width * this.canvas.height) / 3000);
+                
+                for (let i = 0; i < numStars; i++) {
+                    this.stars.push({
+                        x: Math.random() * this.canvas.width,
+                        y: Math.random() * this.canvas.height,
+                        radius: Math.random() * 1.5 + 0.3,
+                        opacity: Math.random(),
+                        twinkleSpeed: Math.random() * 0.02 + 0.008,
+                        layer: Math.random() < 0.33 ? 0.1 : Math.random() < 0.5 ? 0.3 : 0.5
+                    });
+                }
+            }
+            
+            animate() {
+                this.ctx.fillStyle = '#0a0a12';
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                this.stars.forEach(star => {
+                    star.opacity += star.twinkleSpeed;
+                    if (star.opacity >= 1 || star.opacity <= 0.2) {
+                        star.twinkleSpeed *= -1;
+                    }
+                    
+                    const offsetY = this.scrollY * star.layer;
+                    const drawY = (star.y - offsetY) % (this.canvas.height + 50);
+                    const finalY = drawY < 0 ? drawY + this.canvas.height + 50 : drawY;
+                    
+                    this.ctx.beginPath();
+                    this.ctx.arc(star.x, finalY, star.radius, 0, Math.PI * 2);
+                    this.ctx.fillStyle = `rgba(0, 255, 255, ${star.opacity * 0.8})`;
+                    this.ctx.fill();
+                    
+                    if (star.radius > 1) {
+                        this.ctx.beginPath();
+                        this.ctx.arc(star.x, finalY, star.radius * 2.5, 0, Math.PI * 2);
+                        this.ctx.fillStyle = `rgba(0, 255, 255, ${star.opacity * 0.15})`;
+                        this.ctx.fill();
+                    }
+                });
+                
+                requestAnimationFrame(() => this.animate());
+            }
+        }
+
+        // ========================================
+        // マウス追従パーティクル - 改善版
+        // ========================================
+        class MouseParticles {
+            constructor() {
+                this.particles = [];
+                this.maxParticles = 50; // 増加: 15 → 50
+                document.addEventListener('mousemove', (e) => {
+                    // 頻度を上げる: 0.1 → 0.4
+                    if (Math.random() < 0.4) {
+                        this.create(e.clientX, e.clientY);
+                    }
+                });
+            }
+            
+            create(x, y) {
+                const particle = document.createElement('div');
+                particle.className = 'mouse-particle';
+                // サイズを大きく: 2-7px → 6-16px
+                const size = Math.random() * 10 + 6;
+                // 位置にランダム性を追加
+                const offsetX = (Math.random() - 0.5) * 20;
+                const offsetY = (Math.random() - 0.5) * 20;
+                particle.style.cssText = `
+                    width: ${size}px; 
+                    height: ${size}px;
+                    background: radial-gradient(circle, rgba(255, 255, 255, 0.9), rgba(200, 255, 255, 0.6), transparent);
+                    left: ${x + offsetX}px; 
+                    top: ${y + offsetY}px;
+                    box-shadow: 0 0 ${size * 1.5}px rgba(255, 255, 255, 0.8), 0 0 ${size * 2.5}px rgba(200, 255, 255, 0.5);
+                    animation: particleFade 0.8s ease-out forwards;
+                `;
+                document.body.appendChild(particle);
+                this.particles.push(particle);
+                
+                // 古いパーティクルを削除
+                if (this.particles.length > this.maxParticles) {
+                    const old = this.particles.shift();
+                    if (old && old.parentNode) old.remove();
+                }
+                
+                // アニメーション終了後に削除
+                setTimeout(() => { 
+                    if (particle.parentNode) particle.remove(); 
+                }, 800);
+            }
+        }
+
+        // ========================================
+        // Lazy Loading
+        // ========================================
+        class LazyLoader {
+            constructor() {
+                const images = document.querySelectorAll('img.lazy');
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const img = entry.target;
+                            img.src = img.dataset.src;
+                            img.onload = () => img.classList.add('lazy-loaded');
+                            observer.unobserve(img);
+                        }
+                    });
+                }, { rootMargin: '50px' });
+                images.forEach(img => observer.observe(img));
+            }
+        }
+
+        // ========================================
+        // タブ切り替え
+        // ========================================
+        class CrewTabs {
+            constructor() {
+                document.querySelectorAll('.crew-card').forEach(card => {
+                    const tabs = card.querySelectorAll('.display-tab');
+                    const contents = card.querySelectorAll('.tab-content');
+                    tabs.forEach(tab => {
+                        tab.addEventListener('click', () => {
+                            tabs.forEach(t => t.classList.remove('active'));
+                            tab.classList.add('active');
+                            contents.forEach(c => {
+                                c.classList.remove('active');
+                                if (c.id === tab.dataset.tab) {
+                                    c.classList.add('active');
+                                    const img = c.querySelector('img.lazy');
+                                    if (img && img.dataset.src) {
+                                        img.src = img.dataset.src;
+                                        img.onload = () => img.classList.add('lazy-loaded');
+                                    }
+                                }
+                            });
+                        });
+                    });
+                });
+            }
+        }
+
+        // ========================================
+        // トップに戻るボタン
+        // ========================================
+        class BackToTop {
+            constructor() {
+                const btn = document.getElementById('backToTop');
+                window.addEventListener('scroll', () => {
+                    btn.classList.toggle('visible', window.pageYOffset > 500);
+                });
+                btn.addEventListener('click', () => {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            }
+        }
+
+        // ========================================
+        // スクロールアニメーション
+        // ========================================
+        class ScrollAnimations {
+            constructor() {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.style.opacity = '1';
+                            entry.target.style.transform = 'translateY(0)';
+                        }
+                    });
+                }, { threshold: 0.1 });
+
+                document.querySelectorAll('.crew-card').forEach((el, i) => {
+                    el.style.opacity = '0';
+                    el.style.transform = 'translateY(30px)';
+                    el.style.transition = `all 0.6s ease ${i * 0.1}s`;
+                    observer.observe(el);
+                });
+
+                document.querySelectorAll('.protocol-card, .gallery-monitor').forEach((el, i) => {
+                    el.style.opacity = '0';
+                    el.style.transform = 'translateY(20px)';
+                    el.style.transition = `all 0.5s ease ${i * 0.1}s`;
+                    observer.observe(el);
+                });
+            }
+        }
+
+        // ========================================
+        // スクロールインジケーター
+        // ========================================
+        class ScrollIndicator {
+            constructor() {
+                const indicator = document.querySelector('.scroll-indicator');
+                if (indicator) {
+                    window.addEventListener('scroll', () => {
+                        indicator.style.opacity = window.pageYOffset > 200 ? '0' : '0.7';
+                    });
+                }
+            }
+        }
+
+        // ========================================
+        // 初期化
+        // ========================================
+        document.addEventListener('DOMContentLoaded', () => {
+            new Starfield();
+            new MouseParticles();
+            new LazyLoader();
+            new CrewTabs();
+            new BackToTop();
+            new ScrollAnimations();
+            new ScrollIndicator();
+            
+            console.log('🚀 HOSHIMEGURI SPACECRAFT SYSTEMS ONLINE');
+        });
+    </script>
+</body>
+</html>
